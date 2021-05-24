@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -20,11 +21,15 @@ public class CompanyServiceImpl implements CompanyService{
 
     @Override
     public ResponseEntity<List<CompanyDto>> getCompanies(Pageable pageable) {
-        return null;
+        return new ResponseEntity<>(companyRepository.findAll(pageable)
+                                                    .stream()
+                                                    .map(Company->modelMapper.map(Company, CompanyDto.class))
+                                                    .collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<CompanyDto> getCompany(CompanyDto param) {
-        return null;
+        return new ResponseEntity<>(modelMapper.map(companyRepository.findById(param.getId())
+                                                                    .orElse(null), CompanyDto.class), HttpStatus.OK);
     }
 }
